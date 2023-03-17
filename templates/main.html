@@ -18,6 +18,12 @@
           .column {
             flex: 50%;
           }
+
+          #graph1{
+            height: 500px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+          }
     </style>
 </head>
 <body>
@@ -28,7 +34,7 @@
                    accept=".xlsx, .xls, .csv" oninput="importSignal()">
 
 <div class="row">
-    <div class="column" id="graph1">hi
+    <div class="column" id="graph1">
     </div>
     <div class="column" id="graph2">hi
     </div>
@@ -38,6 +44,19 @@
 
 
 <script>
+
+
+
+    //Add Empty plot on load, and hide buttons and sliders
+    const layout = { title: 'Please add your signal', yaxis: { title: 'y', fixedrange: true }, xaxis: { title: 'x', fixedrange: true, rangemode: 'tozero'}, width : 1500 }; // fixedrange -> No pan when there is no signal
+        const plotDiv = document.getElementById('graph1');
+        const config = {
+            displayModeBar: false, //disable plotlytool bar when there is no signal
+        }
+        Plotly.newPlot(plotDiv, [], layout, config);
+
+
+
     let x=[];
     let y=[];
     function importSignal() {
