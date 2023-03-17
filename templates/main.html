@@ -21,6 +21,12 @@
     </style>
 </head>
 <body>
+    
+    <label for="sig">Choose a Signal file:</label>
+            <input type="file"
+                   id="sig" name="signal"
+                   accept=".xlsx, .xls, .csv" oninput="importSignal()">
+
 <div class="row">
     <div class="column" id="graph1">hi
     </div>
@@ -31,6 +37,39 @@
 
 
 
+<script>
+    let x=[];
+    let y=[];
+    function importSignal() {
+        // Get the selected file
+        const fileInput = document.getElementById('sig');
+        const file = fileInput.files[0];
 
+        // Create a new FileReader object
+        const reader = new FileReader();
+
+        // Define a callback function to handle the file data
+        reader.onload = (event) => {
+            // Get the file data as a string
+            const fileData = event.target.result;
+
+            // Split the string into lines
+            const lines = fileData.split(/\r?\n/);
+
+            // Create arrays for each column
+          //  const Time = [];
+           // const Amplitude = [];
+
+            // Loop through the lines and split each line into columns
+            for (let i = 0; i < lines.length; i++) {
+                const columns = lines[i].split(',');
+
+                // Store the column values in their respective arrays
+                x.push(columns[0]);
+                y.push(columns[1]);
+            }
+        }
+
+</script>
 </body>
 </html>
