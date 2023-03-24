@@ -27,6 +27,8 @@ Plotly.newPlot(plotDiv3, [], layout3, config3);
 
 
 /////////////////////variables for signal parameters
+let components_list={};
+let numberofcomponents=0;
 let fmax;
 let amplitudeofsig;
 let time=[];
@@ -34,8 +36,9 @@ let Amplitude_1=[];
 let timeofsig=5;
 let stepofsig=0.001;
 let addedsignals=0;
-
+let originalsignal={amplitude:0,freq:0,x:[],y:[],name:"main_signal"};
 let samplingflag =false;
+let copytime=[];let copyamp=[];
 function importSignal() {
 // Get the selected file
 const fileInput = document.getElementById('sig');
@@ -54,7 +57,12 @@ const lines = fileData.split(/\r?\n/);
 
 // Initialize arrays for the x and y values
 
-
+if (addedsignals>0){
+  time=[];
+  Amplitude_1=[];
+  copyamp=[];
+  copytime=[];
+}
 // Loop through the lines and split each line into columns
 for (let i = 0; i < lines.length; i++) {
     const columns = lines[i].split(',');
@@ -62,10 +70,13 @@ for (let i = 0; i < lines.length; i++) {
     // Store the column values in their respective arrays
     time.push(parseFloat(columns[0]));
     Amplitude_1.push(parseFloat(columns[1]));
+    /////////other naming for signals that are put after components
+   copytime.push(parseFloat(columns[0]));
+   copyamp.push(parseFloat(columns[1]));
 }
 
 // Create a new trace for the signal data
-if (addedsignals==0){
+if (numberofcomponents==0){
 const trace = {
     x: time,
     y: Amplitude_1,
@@ -79,6 +90,34 @@ const trace = {
 // Update the plot with the new trace
 Plotly.newPlot(plotDiv, [trace], layout, config);
 addedsignals=addedsignals+1;
+originalsignal['x']=[...time];
+originalsignal['y']=[...Amplitude_1];
+components_list[originalsignal["name"]]=originalsignal;
+numberofcomponents=numberofcomponents+1;
+console.log(Amplitude_1);
+
+}
+else {
+  addedsignals=addedsignals+1;
+originalsignal['x']=[...copytime];
+originalsignal['y']=[...copyamp];
+components_list[originalsignal["name"]]=originalsignal;
+numberofcomponents=numberofcomponents+1;
+  for (let i=0;i<5000;i+=1){
+    Amplitude_1[i]=Amplitude_1[i]+originalsignal['y'][i];
+    }
+const trace={
+  x: time,
+  y: Amplitude_1,
+  type: 'scatter',
+  mode: 'lines',
+  line: {
+      color: 'blue'
+  },
+};
+Plotly.deleteTraces(plotDiv, 0);
+Plotly.newPlot(plotDiv, [trace], layout, config);
+
 }
 }
 // Read the file as text
@@ -169,17 +208,29 @@ freqSlider.oninput = () => {
       ydata.push(eval(exp));
     }
     
-    if (addedsignals==0){
-    time =[...xdata];
-    Amplitude_1=[...ydata];
-    }
-   
+    
+    
+     
+      numberofcomponents=numberofcomponents+1;
+    let component={amplitude:amp,freq:f,x:xdata,y:ydata,name:"freq="+f+",amp="+amp};
+    components_list[component.name]=component;
+
+    
+    return component;
   }
 
 mixSignalbtn.onclick =async () => {
-  if (addedsignals==0){
-  generate(ampSlider.value,freqSlider.value);
-  
+  generatedsignal =generate(ampSlider.value,freqSlider.value);
+  if (numberofcomponents==1)
+  {
+    time=[...generatedsignal.x];
+    Amplitude_1=[...generatedsignal.y];
+  }
+  else {
+for (let i=0;i<5000;i+=1){
+Amplitude_1[i]=Amplitude_1[i]+generatedsignal['y'][i];
+}
+  }
 
     const trace = {
         x: time,
@@ -190,9 +241,11 @@ mixSignalbtn.onclick =async () => {
             color: 'blue'
         },
     };
-    
+    if(numberofcomponents>1)
+    {Plotly.deleteTraces(plotDiv, 0);}
+
     // Update the plot with the new trace
     Plotly.newPlot(plotDiv, [trace], layout, config);
     addedsignals=addedsignals+1;
     }
-}
+
