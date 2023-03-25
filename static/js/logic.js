@@ -27,18 +27,26 @@ Plotly.newPlot(plotDiv3, [], layout3, config3);
 
 
 /////////////////////variables for signal parameters
-let components_list={}; //list of signals
-let numberofcomponents=0;///n of signals
-let fmax; ///frequencu
-let amplitudeofsig; ///amp
-let time=[];////////FINAL SIGNAL ARRAY
-let Amplitude_1=[];//////////////FINAL SIG ARRAY
+let components_list={};
+let numberofcomponents=0;
+let fmax;
+let amplitudeofsig;
+let time=[];
+let Amplitude_1=[];
 let timeofsig=5;
 let stepofsig=0.001;
-let addedsignals=0;/////////////MAIN SIGNAL
-let originalsignal={amplitude:0,freq:0,x:[],y:[],name:"main_signal"}; ////MAIN SIG
-let samplingflag =false;///////TO SAMPLE
-let copytime=[];let copyamp=[];////////COPY OF MAIN
+let addedsignals=0;
+let originalsignal={amplitude:0,freq:0,x:[],y:[],name:"main_signal"};
+let component={amplitude:0,freq:0,x:[],y:[],name:"freq="+0+",amp="+0};
+
+let samplingflag =false;
+let copytime=[];let copyamp=[];
+/////TO DELETE SIGNAL
+let signalsMenu = document.getElementById("addedcomponents");
+signalsMenu.options.length = 0;
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 function importSignal() {
 // Get the selected file
 const fileInput = document.getElementById('sig');
@@ -58,18 +66,20 @@ const lines = fileData.split(/\r?\n/);
 // Initialize arrays for the x and y values
 
 if (addedsignals>0){
-  time=[];
-  Amplitude_1=[];
+ // time=[];
+ // Amplitude_1=[];
   copyamp=[];
   copytime=[];
+  signalsMenu.options.length = 0;
+
 }
 // Loop through the lines and split each line into columns
 for (let i = 0; i < lines.length; i++) {
     const columns = lines[i].split(',');
 
     // Store the column values in their respective arrays
-    time.push(parseFloat(columns[0]));
-    Amplitude_1.push(parseFloat(columns[1]));
+    //time.push(parseFloat(columns[0]));
+    //Amplitude_1.push(parseFloat(columns[1]));
     /////////other naming for signals that are put after components
    copytime.push(parseFloat(columns[0]));
    copyamp.push(parseFloat(columns[1]));
@@ -77,6 +87,8 @@ for (let i = 0; i < lines.length; i++) {
 
 // Create a new trace for the signal data
 if (numberofcomponents==0){
+  time=[...copytime];
+  Amplitude_1=[...copyamp];
 const trace = {
     x: time,
     y: Amplitude_1,
@@ -86,22 +98,29 @@ const trace = {
         color: 'blue'
     },
 };
-
+    let option = document.createElement("option");
+    option.text = `Signal${numberofcomponents}  imported Signal`;
+    option.value = `${originalsignal["name"]}`;
+    signalsMenu.appendChild(option);
 // Update the plot with the new trace
 Plotly.newPlot(plotDiv, [trace], layout, config);
 addedsignals=addedsignals+1;
-originalsignal['x']=[...time];
-originalsignal['y']=[...Amplitude_1];
+originalsignal.x=[...time];
+originalsignal.y=[...Amplitude_1];
 components_list[originalsignal["name"]]=originalsignal;
 numberofcomponents=numberofcomponents+1;
-console.log(Amplitude_1);
 
 }
 else {
+  
   addedsignals=addedsignals+1;
 originalsignal['x']=[...copytime];
 originalsignal['y']=[...copyamp];
 components_list[originalsignal["name"]]=originalsignal;
+let option = document.createElement("option");
+    option.text = `Signal${numberofcomponents}  imported Signal`;
+    option.value = `${originalsignal["name"]}`;
+    signalsMenu.appendChild(option);
 numberofcomponents=numberofcomponents+1;
   for (let i=0;i<5000;i+=1){
     Amplitude_1[i]=Amplitude_1[i]+originalsignal['y'][i];
@@ -124,6 +143,7 @@ Plotly.newPlot(plotDiv, [trace], layout, config);
 
 reader.readAsText(file);
 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //sampling 
@@ -173,6 +193,7 @@ SRSLider.addEventListener("mouseup", async function () {
   return { frequencies, spectrum };
 
   }
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
   ///Signal mixing
@@ -192,9 +213,9 @@ freqSlider.oninput = () => {
   freqOutput.innerHTML = freqSlider.value + " Hz";
 };
 
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////generate signal func
+//let component={amplitude:0,freq:0, x :[],y :[],name:"freq="+0+",amp="+0};
   function generate(amp, f, times =timeofsig, step = stepofsig) {
     const exp = "amp * Math.sin(2*pi*x*f)";
     const pi = Math.PI;
@@ -208,12 +229,18 @@ freqSlider.oninput = () => {
       ydata.push(eval(exp));
     }
     
-    
-    
-     
-      numberofcomponents=numberofcomponents+1;
-    let component={amplitude:amp,freq:f,x:xdata,y:ydata,name:"freq="+f+",amp="+amp};
-    components_list[component.name]=component;
+component["amplitude"]=amp;
+component["freq"]=f;
+component["x"]=[...xdata];
+component["y"]=[...ydata];
+component["name"]="freq="+f+",amp="+amp ;
+     //var component={amplitude:amp,freq:f,x:xdata,y:ydata,name:"freq="+f+",amp="+amp};
+    components_list[ component["name"] ]=component;
+    let option = document.createElement("option");
+    option.text = `Signal${numberofcomponents}  ${component["name"]}`;
+    option.value = ` ${component["name"]}`;
+    signalsMenu.appendChild(option);
+
 
     
     return component;
@@ -221,15 +248,20 @@ freqSlider.oninput = () => {
 
 mixSignalbtn.onclick =async () => {
   generatedsignal =generate(ampSlider.value,freqSlider.value);
-  if (numberofcomponents==1)
+  if (numberofcomponents==0)
   {
     time=[...generatedsignal.x];
     Amplitude_1=[...generatedsignal.y];
+    numberofcomponents=numberofcomponents+1;
+
+    
   }
   else {
 for (let i=0;i<5000;i+=1){
 Amplitude_1[i]=Amplitude_1[i]+generatedsignal['y'][i];
 }
+numberofcomponents=numberofcomponents+1;
+
   }
 
     const trace = {
@@ -246,6 +278,34 @@ Amplitude_1[i]=Amplitude_1[i]+generatedsignal['y'][i];
 
     // Update the plot with the new trace
     Plotly.newPlot(plotDiv, [trace], layout, config);
-    addedsignals=addedsignals+1;
     }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////DELETE SECTION
 
+let deleteBtn = document.getElementById("delete");
+
+
+deleteBtn.onclick = async ()=>{
+
+let deletedcomponent=signalsMenu.value;
+for (let i=0;i<5000;i+=1){
+
+Amplitude_1[i]=Amplitude_1[i]-components_list[deletedcomponent]["y"][i];
+}
+delete components_list[deletedcomponent];
+numberofcomponents=numberofcomponents-1;
+signalsMenu.remove(signalsMenu.selectedIndex);
+Plotly.deleteTraces(plotDiv, 0);
+const trace = {
+  x: time,
+  y: Amplitude_1,
+  type: 'scatter',
+  mode: 'lines',
+  line: {
+      color: 'blue'
+  },
+};
+Plotly.newPlot(plotDiv, [trace], layout, config);
+
+}
