@@ -33,15 +33,15 @@ let fmax;
 let amplitudeofsig;
 let time=[];
 let Amplitude_1=[];
-let timeofsig=5;
+let timeofsig=5;                       
 let stepofsig=0.001;
 let addedsignals=0;
 let originalsignal={amplitude:0,freq:0,x:[],y:[],name:"main_signal"};
-let component={amplitude:0,freq:0,x:[],y:[],name:"freq="+0+",amp="+0};
+//var component={amplitude:0,freq:0,x:[],y:[],name:"freq="+0+",amp="+0};
 
 let samplingflag =false;
 let copytime=[];let copyamp=[];
-/////TO DELETE SIGNAL
+/////DROPDOWN MENU
 let signalsMenu = document.getElementById("addedcomponents");
 signalsMenu.options.length = 0;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -209,7 +209,7 @@ freqOutput.innerHTML = freqSlider.value + " Hz";
 ampSlider.oninput = () => {
   ampOutput.innerHTML = ampSlider.value + " mV";
 };
-freqSlider.oninput = () => {
+freqSlider.oninput = ()=> {
   freqOutput.innerHTML = freqSlider.value + " Hz";
 };
 
@@ -228,19 +228,17 @@ freqSlider.oninput = () => {
       xdata.push(x);
       ydata.push(eval(exp));
     }
-    
+    var component = {};
 component["amplitude"]=amp;
 component["freq"]=f;
 component["x"]=[...xdata];
-component["y"]=[...ydata];
-component["name"]="freq="+f+",amp="+amp ;
-     //var component={amplitude:amp,freq:f,x:xdata,y:ydata,name:"freq="+f+",amp="+amp};
+component["y"]=ydata;
+component["name"]="freq="+f+",amp="+amp;
     components_list[ component["name"] ]=component;
     let option = document.createElement("option");
     option.text = `Signal${numberofcomponents}  ${component["name"]}`;
-    option.value = ` ${component["name"]}`;
+    option.value = `${component["name"]}`;
     signalsMenu.appendChild(option);
-
 
     
     return component;
@@ -291,7 +289,7 @@ deleteBtn.onclick = async ()=>{
 let deletedcomponent=signalsMenu.value;
 for (let i=0;i<5000;i+=1){
 
-Amplitude_1[i]=Amplitude_1[i]-components_list[deletedcomponent]["y"][i];
+Amplitude_1[i]=Amplitude_1[i]-components_list[deletedcomponent].y[i];
 }
 delete components_list[deletedcomponent];
 numberofcomponents=numberofcomponents-1;
@@ -309,3 +307,4 @@ const trace = {
 Plotly.newPlot(plotDiv, [trace], layout, config);
 
 }
+
