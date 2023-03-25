@@ -27,18 +27,18 @@ Plotly.newPlot(plotDiv3, [], layout3, config3);
 
 
 /////////////////////variables for signal parameters
-let components_list={};
-let numberofcomponents=0;
-let fmax;
-let amplitudeofsig;
-let time=[];
-let Amplitude_1=[];
+let components_list={}; //list of signals
+let numberofcomponents=0;///n of signals
+let fmax; ///frequencu
+let amplitudeofsig; ///amp
+let time=[];////////FINAL SIGNAL ARRAY
+let Amplitude_1=[];//////////////FINAL SIG ARRAY
 let timeofsig=5;
 let stepofsig=0.001;
-let addedsignals=0;
-let originalsignal={amplitude:0,freq:0,x:[],y:[],name:"main_signal"};
-let samplingflag =false;
-let copytime=[];let copyamp=[];
+let addedsignals=0;/////////////MAIN SIGNAL
+let originalsignal={amplitude:0,freq:0,x:[],y:[],name:"main_signal"}; ////MAIN SIG
+let samplingflag =false;///////TO SAMPLE
+let copytime=[];let copyamp=[];////////COPY OF MAIN
 function importSignal() {
 // Get the selected file
 const fileInput = document.getElementById('sig');
