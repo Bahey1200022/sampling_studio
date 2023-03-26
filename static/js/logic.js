@@ -1,5 +1,3 @@
-//import FFT from 'fft.js';
-
 const layout = { title: 'Original Signal', yaxis: { title: 'Amplitude', fixedrange: true }, xaxis: { title: 'Frequency', fixedrange: true, rangemode: 'tozero'}, width : 1000 }; // fixedrange -> No pan when there is no signal
 const plotDiv = document.getElementById('graph1');
 const config = {
@@ -62,9 +60,10 @@ const fileData = event.target.result;
 
 // Split the string into lines
 const lines = fileData.split(/\r?\n/);
-
+if (numberofcomponents>0){Plotly.deleteTraces(plotDiv, 0);}
 // Initialize arrays for the x and y values
-
+if (samplingflag) {Plotly.deleteTraces(plotDiv, 1);
+}
 if (addedsignals>0){
  // time=[];
  // Amplitude_1=[];
@@ -94,6 +93,7 @@ if (numberofcomponents==0){
 const trace = {
     x: time,
     y: Amplitude_1,
+    name:"original",
     type: 'scatter',
     mode: 'lines',
     line: {
@@ -129,14 +129,14 @@ numberofcomponents=numberofcomponents+1;
     }
 const trace={
   x: time,
-  y: Amplitude_1,
+  y: Amplitude_1,name:"original",
   type: 'scatter',
   mode: 'lines',
   line: {
       color: 'blue'
   },
 };
-Plotly.deleteTraces(plotDiv, 0);
+//Plotly.deleteTraces(plotDiv, 0);
 Plotly.newPlot(plotDiv, [trace], layout, config);
 
 }
@@ -159,13 +159,15 @@ SRSLider.oninput = () => {
     SROutput.innerHTML = SRSLider.value + " fmax";
   };
 /////////actually sampling 
+let sampleX = [];
+let sampleY = [];
 SRSLider.addEventListener("mouseup", async function () {
-    fmax =calc_fmax_via_fft();
-    let samplingRate = SRSLider.value*fmax;
-    let sampleX = [];
-    let sampleY = [];
+    let samplingRate = SRSLider.value;
+    sampleX = [];
+    sampleY = [];
     let step = (time.length) / (samplingRate) ; /////////// sampling step equation
     ////////// (samples * sampling period )
+    
     //console.log(step);
     let index
 
@@ -176,30 +178,17 @@ SRSLider.addEventListener("mouseup", async function () {
     }
     //console.log(sampleX.length);
     if (!samplingflag){
-    Plotly.addTraces(plotDiv, {x: sampleX,y: sampleY,  type: 'scatter', mode: 'markers',});}
-    
+    Plotly.addTraces(plotDiv, {x: sampleX,y: sampleY,  type: 'scatter',name:"sampled points", mode: 'markers',});
+    samplingflag=true;}
+    else {
+      Plotly.deleteTraces(plotDiv, 1);
+      Plotly.addTraces(plotDiv, {x: sampleX,y: sampleY,  type: 'scatter',name:"sampled points", mode: 'markers',});
+
+    }
+
   });
 
-
-  function calc_fmax_via_fft(){
-    // Calculate the spectrum using FFT algorithm
-    /*const signal_fft = fft(Amplitude_1);
-
-// Get the amplitude spectrum from the FFT
-const amplitude_spectrum = signal_fft.map((c) => 2 * Math.abs(c) / signal_length);
-
-// Plot the amplitude spectrum
-const frequency_data = Array.from({ length: signal_length / 2 }, (_, i) => i * (sampling_frequency / signal_length));
-const amplitude_data = amplitude_spectrum.slice(0, signal_length / 2)
-
-const maxindex= amplitude_data.indexOf(Math.max(...amplitude_data));
-const wantedfrequency =frequency_data[maxindex];*/
-const signal_fft = FFT(Amplitude_1);
-const wantedfrequency=Math.max(signal_fft);
-console.log(wantedfrequency);
-return wantedfrequency;
-
-  }
+  
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -253,6 +242,8 @@ component["name"]="freq="+f+",amp="+amp;
 
 mixSignalbtn.onclick =async () => {
   generatedsignal =generate(ampSlider.value,freqSlider.value);
+  if (samplingflag)
+{Plotly.deleteTraces(plotDiv, 1);samplingflag=false;}
   if (numberofcomponents==0)
   {
     time=[...generatedsignal.x];
@@ -272,7 +263,7 @@ numberofcomponents=numberofcomponents+1;
     const trace = {
         x: time,
         y: Amplitude_1,
-        type: 'scatter',
+        type: 'scatter',name:"original",
         mode: 'lines',
         line: {
             color: 'blue'
@@ -280,7 +271,7 @@ numberofcomponents=numberofcomponents+1;
     };
     if(numberofcomponents>1)
     {Plotly.deleteTraces(plotDiv, 0);}
-
+    
     // Update the plot with the new trace
     Plotly.newPlot(plotDiv, [trace], layout, config);
     }
@@ -292,7 +283,8 @@ let deleteBtn = document.getElementById("delete");
 
 
 deleteBtn.onclick = async ()=>{
-
+if (samplingflag)
+{Plotly.deleteTraces(plotDiv, 1);samplingflag=false;}
 let deletedcomponent=signalsMenu.value;
 for (let i=0;i<5000;i+=1){
 
@@ -305,7 +297,7 @@ signalsMenu.remove(signalsMenu.selectedIndex);
 Plotly.deleteTraces(plotDiv, 0);
 const trace = {
   x: time,
-  y: Amplitude_1,
+  y: Amplitude_1,name:"original",
   type: 'scatter',
   mode: 'lines',
   line: {
