@@ -70,6 +70,8 @@ if (addedsignals>0){
  // Amplitude_1=[];
   copyamp=[];
   copytime=[];
+  numberofcomponents=numberofcomponents-1;
+  if (numberofcomponents==-1){numberofcomponents=0;}
   signalsMenu.options.length = 0;
 
 }
@@ -158,7 +160,7 @@ SRSLider.oninput = () => {
   };
 /////////actually sampling 
 SRSLider.addEventListener("mouseup", async function () {
-    calc_fmax_via_fft();
+    fmax =calc_fmax_via_fft();
     let samplingRate = SRSLider.value*fmax;
     let sampleX = [];
     let sampleY = [];
@@ -175,22 +177,27 @@ SRSLider.addEventListener("mouseup", async function () {
     //console.log(sampleX.length);
     if (!samplingflag){
     Plotly.addTraces(plotDiv, {x: sampleX,y: sampleY,  type: 'scatter', mode: 'markers',});}
-    else{
-        
-    }
+    
   });
 
 
   function calc_fmax_via_fft(){
     // Calculate the spectrum using FFT algorithm
-    const fft = new FFT(Amplitude_1.length);
-    const spectrum = fft.createComplexArray(); // Create a complex array for the spectrum
-    fft.realTransform(spectrum, Amplitude_1);
-  // Calculate the corresponding frequencies for the spectrum
-  const sampleRate = 1 / time[1]; // Assumes evenly spaced samples
-  const frequencies = Array.from({ length: spectrum.length }, (v, i) => i * sampleRate / spectrum.length);
+    /*const signal_fft = fft(Amplitude_1);
 
-  return { frequencies, spectrum };
+// Get the amplitude spectrum from the FFT
+const amplitude_spectrum = signal_fft.map((c) => 2 * Math.abs(c) / signal_length);
+
+// Plot the amplitude spectrum
+const frequency_data = Array.from({ length: signal_length / 2 }, (_, i) => i * (sampling_frequency / signal_length));
+const amplitude_data = amplitude_spectrum.slice(0, signal_length / 2)
+
+const maxindex= amplitude_data.indexOf(Math.max(...amplitude_data));
+const wantedfrequency =frequency_data[maxindex];*/
+const signal_fft = FFT(Amplitude_1);
+const wantedfrequency=Math.max(signal_fft);
+console.log(wantedfrequency);
+return wantedfrequency;
 
   }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -293,6 +300,7 @@ Amplitude_1[i]=Amplitude_1[i]-components_list[deletedcomponent].y[i];
 }
 delete components_list[deletedcomponent];
 numberofcomponents=numberofcomponents-1;
+if (deletedcomponent=="main_signal"){addedsignals==addedsignals-1;}
 signalsMenu.remove(signalsMenu.selectedIndex);
 Plotly.deleteTraces(plotDiv, 0);
 const trace = {
@@ -307,4 +315,3 @@ const trace = {
 Plotly.newPlot(plotDiv, [trace], layout, config);
 
 }
-
