@@ -161,11 +161,13 @@ SRSLider.oninput = () => {
 /////////actually sampling 
 let sampleX = [];
 let sampleY = [];
+let constructx=[];
+let constructy=[];
 SRSLider.addEventListener("mouseup", async function () {
     let samplingRate = SRSLider.value;
     sampleX = [];
     sampleY = [];
-    let step = (time.length) / (samplingRate) ; /////////// sampling step equation
+    let step = (time.length)/time[time.length-1] / (samplingRate) ; /////////// sampling step equation
     ////////// (samples * sampling period )
     
     //console.log(step);
@@ -185,7 +187,40 @@ SRSLider.addEventListener("mouseup", async function () {
       Plotly.addTraces(plotDiv, {x: sampleX,y: sampleY,  type: 'scatter',name:"sampled points", mode: 'markers',});
 
     }
+//////////////////////RECONSTRUCTION
+// Resample using sinc interpolation
+constructx=[...time];
+constructy=[];
+//constructy=sincInterpolation(time,sampleY,samplingRate,constructx);
+let Fs = samplingRate;
+    //calculating the reconstructed signal using sinc interpolation
+    for (let itr = 0; itr < time.length; itr += 1) {
+      let interpolatedValue = 0;
+      for (let itrS = 0; itrS < sampleY.length; itrS += 1) {
+        let intrpolationComp =
+         Math.PI * (constructx[itr] - itrS / Fs) * Fs;
+        interpolatedValue +=
+          sampleY[itrS] *
+          (Math.sin(intrpolationComp) / intrpolationComp);
+      }
+      constructy.push(interpolatedValue);
+    }
 
+
+
+
+console.log(constructy);
+const trace = {
+  x: constructx,
+  y: constructy,
+  type: 'scatter',
+  mode: 'lines',
+  line: {
+    color: 'blue'
+  },
+  name: 'Resampled Signal'
+};
+Plotly.newPlot(plotDiv2, [trace]);
   });
 
   
@@ -307,3 +342,49 @@ const trace = {
 Plotly.newPlot(plotDiv, [trace], layout, config);
 
 }
+function sincInterpolation(time, sampleY, Fs, newTime) {
+  // create a new array to store the reconstructed signal
+  let constructy = [];
+
+  // loop through the new time values and calculate the interpolated values
+  for (let i = 0; i < newTime.length; i++) {
+    let sum = 0;
+    for (let j = 0; j < sampleY.length; j++) {
+      let sincComp = (newTime[i] - time[j]) * Math.PI * Fs;
+      if (sincComp === 0) {
+        sum += sampleY[j];
+      } else {
+        sum += sampleY[j] * (Math.sin(sincComp) / sincComp);
+      }
+    }
+    constructy.push(sum);
+  }
+
+  return constructy;
+}
+/////////////////////////////////Saving 
+let saveBtn = document.getElementById("save");
+function saveCSV(x, y) {
+  let csvData = [];
+  for (let i = 0; i < x.length; i += 1) {
+    csvData.push([x[i], y[i]]);
+  }
+  return csvData;
+}
+let downloadLink = document.getElementById("download");
+saveBtn.onclick = () => {
+  let csvData = [];
+  
+    csvData = saveCSV(time, Amplitude_1);
+  
+  let csv = "time,amplitude\n";
+  //merge the data with CSV
+  csvData.forEach(function (row) {
+    csv += row.join(",");
+    csv += "\n";
+  });
+  //display the created CSV data on the web browser
+  downloadLink.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
+  //provide the name for the CSV file to be downloaded
+  downloadLink.download = "Signal.csv";
+};
