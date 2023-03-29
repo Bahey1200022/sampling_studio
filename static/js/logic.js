@@ -362,7 +362,88 @@ function sincInterpolation(time, sampleY, Fs, newTime) {
 
   return constructy;
 }
-/////////////////////////////////Saving 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////NOISE
+var snrSlider = document.getElementById("noise");
+var snrOutput = document.getElementById("snrOutput");
+let SNR = snrSlider.value;
+snrSlider.oninput = async function () {
+  snrOutput.innerHTML  = snrSlider.value;
+  
+};
+snrSlider.addEventListener('mouseup',  () => {
+let noise_array=[];
+let SNR =snrSlider.value;
+
+let copiedY = [...Amplitude_1];
+      //we calculate the average of the square values of y (aka the power)
+      let sum_power = 0;
+      for (let itr = 0; itr < copiedY.length; itr += 1) {
+        let powerComponent = Math.pow(copiedY[itr], 2);
+        sum_power += powerComponent;
+      }
+      //then we get the average of the power (divide by the number of values)
+      let signal_power = Math.sqrt(sum_power / copiedY.length);
+
+      //we add a random noise component based on the SNR to the signal values
+      for (let itr = 0; itr < copiedY.length; itr += 1) {
+        let noiseComponent = this.getNormalDistRand(0,signal_power / SNR);
+        
+        Amplitude_1[itr] =Amplitude_1[itr] + noiseComponent;
+          noise_array.push(noiseComponent);
+      }
+
+      const trace = {
+        x: time,
+        y: Amplitude_1,name:"original",
+        type: 'scatter',
+        mode: 'lines',
+        line: {
+            color: 'blue'
+        },
+      };
+      Plotly.newPlot(plotDiv, [trace], layout, config);
+
+
+});
+//For generating a gaussian distributed variable
+function boxMullerTransform() {
+  const u1 = Math.random();
+  const u2 = Math.random();
+
+  const z0 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+  const z1 = Math.sqrt(-2.0 * Math.log(u1)) * Math.sin(2.0 * Math.PI * u2);
+
+  return { z0, z1 };
+  // return z0;
+}
+function getNormalDistRand(mean, stddev) {
+  const { z0, _ } = boxMullerTransform();
+  return z0 * stddev + mean;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////Saving 
+////////////////////////////////////////////////////////////////////////////////////////
 let saveBtn = document.getElementById("save");
 function saveCSV(x, y) {
   let csvData = [];
