@@ -153,10 +153,10 @@ reader.readAsText(file);
 var SRSLider = document.getElementById("sampling");
 var SROutput = document.getElementById("SROutput");
 SROutput.innerHTML = SRSLider.value;
-SROutput.innerHTML = SRSLider.value + " fmax";
+SROutput.innerHTML = SRSLider.value + " Hz";
 ///showing sampling rate
 SRSLider.oninput = () => {
-    SROutput.innerHTML = SRSLider.value + " fmax";
+    SROutput.innerHTML = SRSLider.value + " Hz";
   };
 /////////actually sampling 
 let sampleX = [];
