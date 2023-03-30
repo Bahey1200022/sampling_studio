@@ -6,6 +6,7 @@
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
     <link rel="stylesheet" href="../static/css/index.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Sampling studio </title>
     
@@ -21,15 +22,6 @@
                    <input type="range" min="0" max="60" value="11" class="slider" id="sampling">
                    Sampling at rate : <span id="SROutput"></span>
 
-                   <div> <p>Signal Mixing</p>
-                    <label for="maxfreq" id="frel">frequency of mixed signal</label>
-                   <input type="range" min="1" max="15" value="5" class="slider" id="maxfreq">
-                   F: <span id="freqOutput"></span><br>
-                   <label for="Amplitude" id="frel">Max Amplitude of mixed signal</label>
-                   <input type="range" min="1" max="15" value="5" class="slider" id="Amplitude">
-                   Amp: <span id="ampOutput"></span><br>
-                   <button type="button" name="button" id="mixSignalbtn" >Add signal  </button>
-                   </div>
                     <div ><p> Remove signal component</p>
                         <select id="addedcomponents"></select>
                         <button type="button" id="delete">Remove</button>
@@ -43,13 +35,26 @@
                    <button type="button" id="deletenoise">Remove noise</button>
                 </div>
 
-
-<div class="row">
-    <div class="column" id="graph1">
-    </div>
-    <div class="column" id="graph2">
+<div class="container">
+    <div class="row">
+        <div class="column" id="graph1">
+        </div>
+        <div class="column" id="graph2">
+        </div>
     </div>
 </div>
+
+
+<div class="mixer"> <h3>Signal Mixer</h3>
+    <label for="maxfreq" id="frel">Frequency of mixed signal</label>
+   <input type="range" min="1" max="15" value="5" class="slider" id="maxfreq">
+   F: <span id="freqOutput"></span><br><br>
+   <label for="Amplitude" id="frel">Max Amplitude of mixed signal</label>
+   <input type="range" min="1" max="15" value="5" class="slider" id="Amplitude">
+   Amp: <span id="ampOutput"></span><br><br>
+   <button type="button" name="button" id="mixSignalbtn" >Add Signal</button>
+   </div>
+
 <div class="center" id="graph3" ></div>
 
 

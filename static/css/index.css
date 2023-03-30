@@ -9,6 +9,9 @@ h1{
 }
 .row {
     display: flex;
+    justify-content: center;
+    width: 1600px;
+    border-radius: 10px;
   }
   .center {
     margin: auto;
@@ -22,18 +25,49 @@ h1{
 
   #graph1, #graph2{
     height: 500px;
-    width: 20px;
+    width: 700px;
     margin-bottom: 10px;
     margin: 10px;
     margin-top: 50px;
+    display: flex;
+    justify-content: center;
   }
 
   
  
 
   #graph3{
-    margin-left: 30px;
-    margin-right: 20px;
+    display: flex;
+    justify-content: center;
     width: 250px;
     height: 500px;
+  }
+
+  .mixer{
+    position: absolute;
+    background-color:#001b35;
+    width: 300px;
+    padding: 19px;
+    border:solid black 1px;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+    box-shadow: 1px 0.2px 3px rgb(55, 55, 55);
+    
+  }
+
+  #mixSignalbtn{
+    font-size: 15px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: white;
+  }
+
+  #mixSignalbtn:hover{
+    background-color:#dbdbdb
+  }
+
+  .container{
+    display: flex;
+    justify-content: center;
   }
