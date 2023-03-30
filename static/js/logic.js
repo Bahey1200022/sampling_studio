@@ -368,12 +368,14 @@ function sincInterpolation(time, sampleY, Fs, newTime) {
 var snrSlider = document.getElementById("noise");
 var snrOutput = document.getElementById("snrOutput");
 let SNR = snrSlider.value;
+
 snrSlider.oninput = async function () {
   snrOutput.innerHTML  = snrSlider.value;
   
 };
-snrSlider.addEventListener('mouseup',  () => {
 let noise_array=[];
+snrSlider.addEventListener('mouseup',  () => {
+noise_array=[];
 let SNR =snrSlider.value;
 
 let copiedY = [...Amplitude_1];
@@ -407,6 +409,33 @@ let copiedY = [...Amplitude_1];
 
 
 });
+let deletenoise = document.getElementById("deletenoise");
+deletenoise.onclick = async ()=>{
+  let withoutnoise=[];
+for(let purecounter=0;purecounter<Amplitude_1.length;purecounter++){
+  withoutnoise.push(0);///initialise array
+}
+var keys=Object.keys(components_list);
+console.log(components_list[keys[0]]);
+for (let sig_compo=0;sig_compo<keys.length;sig_compo++){
+  for (let i =0;i<Amplitude_1.length;i++){
+    withoutnoise[i]=withoutnoise[i]+components_list[keys[sig_compo]].y[i];
+  
+}
+}
+console.log(withoutnoise);
+Amplitude_1=withoutnoise;
+const trace = {
+  x: time,
+  y: Amplitude_1,name:"original",
+  type: 'scatter',
+  mode: 'lines',
+  line: {
+      color: 'blue'
+  },
+};
+Plotly.newPlot(plotDiv, [trace], layout, config);
+}
 //For generating a gaussian distributed variable
 function boxMullerTransform() {
   const u1 = Math.random();
