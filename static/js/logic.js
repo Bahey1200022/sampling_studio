@@ -184,7 +184,7 @@ SRSLider.addEventListener("mouseup", async function () {
     Plotly.addTraces(plotDiv, {x: sampleX,y: sampleY,  type: 'scatter',name:"sampled points", mode: 'markers',});
     samplingflag=true;}
     else {
-      Plotly.deleteTraces(plotDiv, 1);
+      Plotly.deleteTraces(plotDiv, 1);//Plotly.deleteTraces(plotDiv2, 0);
       Plotly.addTraces(plotDiv, {x: sampleX,y: sampleY,  type: 'scatter',name:"sampled points", mode: 'markers',});
 
     }
@@ -424,7 +424,7 @@ let SNR =snrSlider.value;
             color: 'blue'
         },
       };
-      Plotly.newPlot(plotDiv, [trace], layout, config);
+      Plotly.newPlot(plotDiv, [trace], layout, config);samplingflag=false;
 
 
 });
