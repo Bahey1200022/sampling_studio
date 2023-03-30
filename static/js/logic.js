@@ -167,10 +167,11 @@ SRSLider.addEventListener("mouseup", async function () {
     let samplingRate = SRSLider.value;
     sampleX = [];
     sampleY = [];
-    let step = (time.length)/time[time.length-1] / (samplingRate) ; /////////// sampling step equation
+    
+    let step = (time.length)/time[time.length-2] / (samplingRate) ; /////////// sampling step equation
     ////////// (samples * sampling period )
     
-    //console.log(step);
+    
     let index
 
     for (let i = 0; i < time.length; i += step) {
@@ -330,6 +331,9 @@ numberofcomponents=numberofcomponents-1;
 if (deletedcomponent=="main_signal"){addedsignals==addedsignals-1;}
 signalsMenu.remove(signalsMenu.selectedIndex);
 Plotly.deleteTraces(plotDiv, 0);
+if (numberofcomponents==0){
+Amplitude_1=[];
+}
 const trace = {
   x: time,
   y: Amplitude_1,name:"original",
@@ -342,26 +346,26 @@ const trace = {
 Plotly.newPlot(plotDiv, [trace], layout, config);
 
 }
-function sincInterpolation(time, sampleY, Fs, newTime) {
-  // create a new array to store the reconstructed signal
-  let constructy = [];
+// function sincInterpolation(time, sampleY, Fs, newTime) {
+//   // create a new array to store the reconstructed signal
+//   let constructy = [];
 
-  // loop through the new time values and calculate the interpolated values
-  for (let i = 0; i < newTime.length; i++) {
-    let sum = 0;
-    for (let j = 0; j < sampleY.length; j++) {
-      let sincComp = (newTime[i] - time[j]) * Math.PI * Fs;
-      if (sincComp === 0) {
-        sum += sampleY[j];
-      } else {
-        sum += sampleY[j] * (Math.sin(sincComp) / sincComp);
-      }
-    }
-    constructy.push(sum);
-  }
+//   // loop through the new time values and calculate the interpolated values
+//   for (let i = 0; i < newTime.length; i++) {
+//     let sum = 0;
+//     for (let j = 0; j < sampleY.length; j++) {
+//       let sincComp = (newTime[i] - time[j]) * Math.PI * Fs;
+//       if (sincComp === 0) {
+//         sum += sampleY[j];
+//       } else {
+//         sum += sampleY[j] * (Math.sin(sincComp) / sincComp);
+//       }
+//     }
+//     constructy.push(sum);
+//   }
 
-  return constructy;
-}
+//   return constructy;
+// }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////NOISE
@@ -395,7 +399,7 @@ let copiedY = [...Amplitude_1];
         Amplitude_1[itr] =Amplitude_1[itr] + noiseComponent;
           noise_array.push(noiseComponent);
       }
-
+console.log(Amplitude_1);
       const trace = {
         x: time,
         y: Amplitude_1,name:"original",
@@ -409,6 +413,8 @@ let copiedY = [...Amplitude_1];
 
 
 });
+/////////////////////////////////////////////////////////////
+//////////////////DELETE
 let deletenoise = document.getElementById("deletenoise");
 deletenoise.onclick = async ()=>{
   let withoutnoise=[];
