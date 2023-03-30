@@ -1,4 +1,4 @@
-const layout = { title: 'Original Signal', yaxis: { title: 'Amplitude', fixedrange: true }, xaxis: { title: 'Frequency', fixedrange: true, rangemode: 'tozero'}, width : 700 }; // fixedrange -> No pan when there is no signal
+const layout = { title: 'Original Signal', yaxis: { title: 'Amplitude', fixedrange: true }, xaxis: { title: 'time', fixedrange: true, rangemode: 'tozero'}, width : 700 }; // fixedrange -> No pan when there is no signal
 const plotDiv = document.getElementById('graph1');
 const config = {
     displayModeBar: false, //disable plotlytool bar when there is no signal
@@ -7,7 +7,7 @@ Plotly.newPlot(plotDiv, [], layout, config);
 
 
 
-const layout2 = { title: 'Reconstructed Signal', yaxis: { title: 'y', fixedrange: true }, xaxis: { title: 'x', fixedrange: true, rangemode: 'tozero'}, width : 700 }; // fixedrange -> No pan when there is no signal
+const layout2 = { title: 'Reconstructed Signal', yaxis: { title: 'Amplitude', fixedrange: true }, xaxis: { title: 'x', fixedrange: true, rangemode: 'tozero'}, width : 700 }; // fixedrange -> No pan when there is no signal
 const plotDiv2 = document.getElementById('graph2');
 const config2 = {
     displayModeBar: false, //disable plotlytool bar when there is no signal
@@ -330,7 +330,7 @@ let deleteBtn = document.getElementById("delete");
 
 deleteBtn.onclick = async ()=>{
 if (samplingflag)
-{Plotly.deleteTraces(plotDiv, 1);Plotly.deleteTraces(plotDiv2, 0);Plotly.deleteTraces(plotDiv3, 0);samplingflag=false;}
+{Plotly.deleteTraces(plotDiv, 1);Plotly.deleteTraces(plotDiv2, 0);Plotly.deleteTraces(plotDiv3, 1);Plotly.deleteTraces(plotDiv3, 0);samplingflag=false;}
 let deletedcomponent=signalsMenu.value;
 for (let i=0;i<5000;i+=1){
 
