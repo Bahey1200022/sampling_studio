@@ -179,6 +179,7 @@ SRSLider.addEventListener("mouseup", async function () {
       sampleX.push(time[index]);
       sampleY.push(Amplitude_1[index]);
     }
+
     //console.log(sampleX.length);
     if (!samplingflag){
     Plotly.addTraces(plotDiv, {x: sampleX,y: sampleY,  type: 'scatter',name:"sampled points", mode: 'markers',});
@@ -198,11 +199,16 @@ let Fs = samplingRate;
     for (let itr = 0; itr < time.length; itr += 1) {
       let interpolatedValue = 0;
       for (let itrS = 0; itrS < sampleY.length; itrS += 1) {
-        let intrpolationComp =
-         Math.PI * (constructx[itr] - itrS / Fs) * Fs;
-        interpolatedValue +=
-          sampleY[itrS] *
-          (Math.sin(intrpolationComp) / intrpolationComp);
+        if(!isNaN(constructx[itr]))
+        {
+          let intrpolationComp =
+          Math.PI * (constructx[itr] - itrS / Fs) * Fs;
+          if(!isNaN(sampleY[itrS]))
+          {
+            interpolatedValue += sampleY[itrS] *
+            (Math.sin(intrpolationComp) / intrpolationComp);
+          }
+        }
       }
       constructy.push(interpolatedValue);
     }
@@ -210,7 +216,8 @@ let Fs = samplingRate;
 
 
 
-console.log(constructy);
+
+//console.log(constructy);
 const trace = {
   x: constructx,
   y: constructy,
@@ -382,24 +389,33 @@ snrSlider.addEventListener('mouseup',  () => {
 noise_array=[];
 let SNR =snrSlider.value;
 
-let copiedY = [...Amplitude_1];
+//let copiedY = [...Amplitude_1];
       //we calculate the average of the square values of y (aka the power)
-      let sum_power = 0;
-      for (let itr = 0; itr < copiedY.length; itr += 1) {
-        let powerComponent = Math.pow(copiedY[itr], 2);
+      var sum_power = 0;
+      for (let itr = 0; itr < Amplitude_1.length; itr += 1) {
+
+        if(!isNaN(Amplitude_1[itr])) //ignore Nans
+        {
+          let powerComponent = Math.pow(Amplitude_1[itr], 2);
         sum_power += powerComponent;
+        }
+        
       }
+
       //then we get the average of the power (divide by the number of values)
-      let signal_power = Math.sqrt(sum_power / copiedY.length);
+      let signal_power = Math.sqrt(sum_power / Amplitude_1.length);
+      
 
       //we add a random noise component based on the SNR to the signal values
-      for (let itr = 0; itr < copiedY.length; itr += 1) {
+      for (let itr = 0; itr < Amplitude_1.length; itr += 1) {
         let noiseComponent = this.getNormalDistRand(0,signal_power / SNR);
         
         Amplitude_1[itr] =Amplitude_1[itr] + noiseComponent;
           noise_array.push(noiseComponent);
       }
-console.log(Amplitude_1);
+
+      
+
       const trace = {
         x: time,
         y: Amplitude_1,name:"original",
@@ -422,14 +438,14 @@ for(let purecounter=0;purecounter<Amplitude_1.length;purecounter++){
   withoutnoise.push(0);///initialise array
 }
 var keys=Object.keys(components_list);
-console.log(components_list[keys[0]]);
+//console.log(components_list[keys[0]]);
 for (let sig_compo=0;sig_compo<keys.length;sig_compo++){
   for (let i =0;i<Amplitude_1.length;i++){
     withoutnoise[i]=withoutnoise[i]+components_list[keys[sig_compo]].y[i];
   
 }
 }
-console.log(withoutnoise);
+//console.log(withoutnoise);
 Amplitude_1=withoutnoise;
 const trace = {
   x: time,
