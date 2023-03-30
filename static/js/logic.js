@@ -225,9 +225,13 @@ const trace = {
   line: {
     color: 'blue'
   },
-  name: 'Resampled Signal'
+  name: 'Reconstructed Signal'
 };
-Plotly.newPlot(plotDiv2, [trace]);
+Plotly.newPlot(plotDiv2, [trace],layout2,config2);
+Plotly.newPlot(plotDiv3, [trace],layout3,config3);
+Plotly.addTraces(plotDiv3, {x: time,y: Amplitude_1,  type: 'scatter',name:"original",line: {
+    color: 'red'
+  }});
   });
 
   
@@ -326,7 +330,7 @@ let deleteBtn = document.getElementById("delete");
 
 deleteBtn.onclick = async ()=>{
 if (samplingflag)
-{Plotly.deleteTraces(plotDiv, 1);Plotly.deleteTraces(plotDiv2, 0);samplingflag=false;}
+{Plotly.deleteTraces(plotDiv, 1);Plotly.deleteTraces(plotDiv2, 0);Plotly.deleteTraces(plotDiv3, 0);samplingflag=false;}
 let deletedcomponent=signalsMenu.value;
 for (let i=0;i<5000;i+=1){
 
