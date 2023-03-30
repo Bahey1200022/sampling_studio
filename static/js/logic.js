@@ -59,16 +59,18 @@ const fileData = event.target.result;
 const lines = fileData.split(/\r?\n/);
 if (numberofcomponents>0){Plotly.deleteTraces(plotDiv, 0);}
 // Initialize arrays for the x and y values
-if (samplingflag) {Plotly.deleteTraces(plotDiv, 1);
+if (samplingflag) {Plotly.deleteTraces(plotDiv, 1);Plotly.deleteTraces(plotDiv2, 0);samplingflag=false;
 }
 if (addedsignals>0){
- // time=[];
- // Amplitude_1=[];
+  time=[];
+  Amplitude_1=[];
   copyamp=[];
   copytime=[];
-  numberofcomponents=numberofcomponents-1;
-  if (numberofcomponents==-1){numberofcomponents=0;}
+ // numberofcomponents=numberofcomponents-1;
+  //if (numberofcomponents==-1){numberofcomponents=0;}
   signalsMenu.options.length = 0;
+  Plotly.deleteTraces(plotDiv, 0);
+
 
 }
 // Loop through the lines and split each line into columns
@@ -324,7 +326,7 @@ let deleteBtn = document.getElementById("delete");
 
 deleteBtn.onclick = async ()=>{
 if (samplingflag)
-{Plotly.deleteTraces(plotDiv, 1);samplingflag=false;}
+{Plotly.deleteTraces(plotDiv, 1);Plotly.deleteTraces(plotDiv2, 0);samplingflag=false;}
 let deletedcomponent=signalsMenu.value;
 for (let i=0;i<5000;i+=1){
 
