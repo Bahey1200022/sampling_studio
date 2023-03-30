@@ -71,3 +71,41 @@ h1{
     display: flex;
     justify-content: center;
   }
+
+  #delete{
+    font-size: 15px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: white;
+  }
+
+  #addedcomponents{
+    font-size: 15px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: white;
+  }
+
+  #delete:hover{
+    background-color:#dbdbdb
+  }
+
+  .noise-container{
+    position: absolute;
+    right: 0px;
+    background-color:#001b35;
+    width: 300px;
+    padding: 19px;
+    border:solid black 1px;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+    box-shadow: 1px 0.2px 3px rgb(55, 55, 55);
+  }
+
+  #deletenoise{
+    font-size: 15px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: white;
+  }

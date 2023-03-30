@@ -22,18 +22,10 @@
                    <input type="range" min="0" max="60" value="11" class="slider" id="sampling">
                    Sampling at rate : <span id="SROutput"></span>
 
-                    <div ><p> Remove signal component</p>
-                        <select id="addedcomponents"></select>
-                        <button type="button" id="delete">Remove</button>
-                    </div>
+
                     
                 <a id="download"><button type="button" id="save">Save Signal</button></a>
-                <div>
-                    <label for="noise" id="noiselabel">SNR:</label>
-                   <input type="range" min="1" max="30" value="5" class="slider" id="noise">
-                   Value: <span id="snrOutput"></span><br>
-                   <button type="button" id="deletenoise">Remove noise</button>
-                </div>
+                
 
 <div class="container">
     <div class="row">
@@ -52,8 +44,23 @@
    <label for="Amplitude" id="frel">Max Amplitude of mixed signal</label>
    <input type="range" min="1" max="15" value="5" class="slider" id="Amplitude">
    Amp: <span id="ampOutput"></span><br><br>
+   <div>
+    <select id="addedcomponents"></select>
+    <button type="button" id="delete">Remove</button>
+</div><br>
    <button type="button" name="button" id="mixSignalbtn" >Add Signal</button>
-   </div>
+</div>
+
+<div class="noise-container">
+    <div class="noise">
+        <h3>Add Noise</h3>
+        <label for="noise" id="noiselabel">SNR:</label>
+       <input type="range" min="1" max="30" value="5" class="slider" id="noise">
+       <span id="snrOutput"></span><br><br>
+       <button type="button" id="deletenoise">Remove noise</button>
+    </div>
+</div>
+
 
 <div class="center" id="graph3" ></div>
 
