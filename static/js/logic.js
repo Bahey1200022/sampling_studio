@@ -163,7 +163,7 @@ let sampleY = [];
 let constructx=[];
 let constructy=[];
 SRSLider.addEventListener("mouseup", async function () {
-    let samplingRate = SRSLider.value;
+    let samplingRate = SRSLider.value  ;
     sampleX = [];
     sampleY = [];
     
@@ -193,7 +193,7 @@ SRSLider.addEventListener("mouseup", async function () {
 constructx=[...time];
 constructy=[];
 //constructy=sincInterpolation(time,sampleY,samplingRate,constructx);
-let Fs = samplingRate;
+let Fs = samplingRate;                                                                   
     //calculating the reconstructed signal using sinc interpolation
     for (let itr = 0; itr < time.length; itr += 1) {
       let interpolatedValue = 0;
@@ -201,7 +201,7 @@ let Fs = samplingRate;
         if(!isNaN(constructx[itr]))
         {
           let intrpolationComp =
-          Math.PI * (constructx[itr] - itrS / Fs) * Fs;
+          Math.PI * (constructx[itr] - itrS / (Fs)) * Fs;
           if(!isNaN(sampleY[itrS]))
           {
             interpolatedValue += sampleY[itrS] *
