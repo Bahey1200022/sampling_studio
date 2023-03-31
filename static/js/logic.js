@@ -73,10 +73,10 @@ const fileInput = document.getElementById('sig');
 
 const fileName = fileInput.value.split(/(\\|\/)/g).pop();
 const title = getTitleFromFileName(fileName); //Extract title
-let Fmax = extractFmaxFromTitle(title);
-document.getElementById("sampling").max = 4*Fmax; //Change slider value to 4Fmax
+// let Fmax = extractFmaxFromTitle(title);
+// document.getElementById("sampling").max = 4*Fmax; //Change slider value to 4Fmax
 
-console.log(Fmax);
+// console.log(Fmax);
 
 
 const file = fileInput.files[0];
