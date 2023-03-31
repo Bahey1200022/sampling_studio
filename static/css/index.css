@@ -59,7 +59,7 @@ h1{
     z-index: 1;
     top: 0;
     left: 0;
-    background-color: #007bff;
+    background-color: #606060;
     overflow-x: hidden;
     padding-top: 20px;
   }
@@ -177,4 +177,59 @@ h1{
   .save_sig{
     display: flex;
     justify-content: center;
+  }
+
+  @media only screen and (max-width: 768px) {
+    body {
+      font-size: 14px;
+    }
+    h1 {
+      font-size: 36px;
+    }
+    .row {
+      width: 100%;
+    }
+    .center {
+      width: 80%;
+    }
+    #graph1, #graph2 {
+      height: 300px;
+      width: 400px;
+    }
+    #graph3 {
+      width: 150px;
+      height: 300px;
+    }
+    .mixer {
+      width: 200px;
+      font-size: 14px;
+    }
+    .sidenav {
+      width: 200px;
+      padding-top: 10px;
+    }
+    .main {
+      margin-left: 200px;
+    }
+    .noise-container {
+      width: 200px;
+      font-size: 14px;
+    }
+    .upload {
+      width: 200px;
+    }
+    .file-upload-button {
+      width: 100px;
+    }
+    .sampling {
+      width: 200px;
+      font-size: 14px;
+    }
+    #deletenoise {
+      font-size: 14px;
+    }
+    .save_sig {
+      flex-direction: column;
+      align-items: center;
+    }
   }
