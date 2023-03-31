@@ -188,6 +188,7 @@ h1{
     }
     .row {
       width: 100%;
+      flex-direction: column;
     }
     .center {
       width: 80%;
@@ -195,6 +196,7 @@ h1{
     #graph1, #graph2 {
       height: 300px;
       width: 400px;
+      flex-direction: column;
     }
     #graph3 {
       width: 150px;
@@ -231,5 +233,46 @@ h1{
     .save_sig {
       flex-direction: column;
       align-items: center;
+    }
+  }
+
+  @media only screen and (min-width: 768px) and (max-width: 1200px) {
+    .row {
+      width: 100%;
+    }
+    .center {
+      width: 80%;
+    }
+    #graph1, #graph2 {
+      height: 400px;
+      width: 500px;
+    }
+    #graph3 {
+      width: 200px;
+      height: 400px;
+    }
+    .mixer {
+      width: 250px;
+      font-size: 16px;
+    }
+    .sidenav {
+      width: 250px;
+    }
+    .noise-container {
+      width: 250px;
+      font-size: 16px;
+    }
+    .upload {
+      width: 250px;
+    }
+    .file-upload-button {
+      width: 120px;
+    }
+    .sampling {
+      width: 250px;
+      font-size: 16px;
+    }
+    #deletenoise {
+      font-size: 16px;
     }
   }
