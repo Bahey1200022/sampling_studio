@@ -1,5 +1,5 @@
 * body{
-    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
 }
 h1{
     display: flex;
@@ -145,6 +145,7 @@ h1{
     width: 150px;
     display: flex;
     justify-content: center;
+    border:#000000 solid 1px;
   }
 
   .file-upload-button:hover{
