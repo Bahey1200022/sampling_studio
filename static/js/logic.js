@@ -496,16 +496,19 @@ deletenoise.onclick = async ()=>{
 for(let purecounter=0;purecounter<Amplitude_1.length;purecounter++){
   withoutnoise.push(0);///initialise array
 }
+
+
 var keys=Object.keys(components_list);
 //console.log(components_list[keys[0]]);
 for (let sig_compo=0;sig_compo<keys.length;sig_compo++){
   for (let i =0;i<Amplitude_1.length;i++){
-    withoutnoise[i]=withoutnoise[i]+components_list[keys[sig_compo]].y[i];
+    withoutnoise[i]=withoutnoise[i]+components_list[keys[sig_compo]].y[i]; //get original signal from components list
   
 }
 }
 //console.log(withoutnoise);
 Amplitude_1=withoutnoise;
+
 const trace = {
   x: time,
   y: Amplitude_1,name:"original",
