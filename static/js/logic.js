@@ -42,9 +42,43 @@ signalsMenu.options.length = 0;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//Function to extract title from file
+function getTitleFromFileName(fileName) {
+  // Split the file name at each dot
+  const parts = fileName.split(".");
+  
+  // Return the first part of the array
+  return parts[0];
+}
+
+//This function extracts max frequency specified in signal title
+function extractFmaxFromTitle(title) {
+  const regex = /freq\s*=\s*(\d+(?:\.\d+)?)/i;
+  const match = regex.exec(title);
+  if (match && match.length > 1) {
+    return parseFloat(match[1]);
+  } else {
+    return null;
+  }
+}
+
+
+
+
 function importSignal() {
 // Get the selected file
 const fileInput = document.getElementById('sig');
+
+const fileName = fileInput.value.split(/(\\|\/)/g).pop();
+const title = getTitleFromFileName(fileName); //Extract title
+let Fmax = extractFmaxFromTitle(title);
+document.getElementById("sampling").max = 4*Fmax; //Change slider value to 4Fmax
+
+console.log(Fmax);
+
+
 const file = fileInput.files[0];
 
 // Create a new FileReader object
@@ -88,7 +122,7 @@ for (let i = 0; i < lines.length; i++) {
 // Create a new trace for the signal data
 if (numberofcomponents==0){
   time=[...copytime];
-  Amplitude_1=[...copyamp];
+  Amplitude_1=[...copyamp]; 
 const trace = {
     x: time,
     y: Amplitude_1,
@@ -151,13 +185,15 @@ reader.readAsText(file);
 
 var SRSLider = document.getElementById("sampling");
 var SROutput = document.getElementById("SROutput");
+
 SROutput.innerHTML = SRSLider.value;
 SROutput.innerHTML = SRSLider.value + " Hz";
 ///showing sampling rate
 SRSLider.oninput = () => {
     SROutput.innerHTML = SRSLider.value + " Hz";
   };
-/////////actually sampling 
+
+/////////actually sampling
 let sampleX = [];
 let sampleY = [];
 let constructx=[];
