@@ -6,8 +6,6 @@ app = Flask(__name__)
 
 @app.route('/')
 def Sampling_Studio():
-    # data = request.json['data']
-    # data1=data+1
     return render_template('main.html')
 
 @app.route('/calculate-fft-max', methods=['POST'])
