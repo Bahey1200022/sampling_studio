@@ -163,6 +163,26 @@ let sampleY = [];
 let constructx=[];
 let constructy=[];
 SRSLider.addEventListener("mouseup", async function () {
+  let fmaxviafft=0;
+  $(document).ready(function() {
+    var array = Amplitude_1;
+    $.ajax({
+      type: "POST",
+      url: "/calculate-fft-max",
+      contentType: "application/json; charset=utf-8",
+      data: JSON.stringify(array),
+      dataType: "json",
+      success: function(data) {
+        //$("#fft-max-magnitude").text(data.fftMaxMagnitude);
+        console.log(data.fftMaxMagnitude);fmaxviafft=data.fftMaxMagnitude;
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log(textStatus, errorThrown);
+      }
+    });
+  });
+  
+  
     let samplingRate = SRSLider.value  ;
     sampleX = [];
     sampleY = [];
@@ -504,3 +524,23 @@ saveBtn.onclick = () => {
   //provide the name for the CSV file to be downloaded
   downloadLink.download = "Signal.csv";
 };
+
+// $(document).ready(function() {
+//   var array = Amplitude_1;
+//   $.ajax({
+//     type: "POST",
+//     url: "/calculate-fft-max",
+//     contentType: "application/json; charset=utf-8",
+//     data: JSON.stringify(array),
+//     dataType: "json",
+//     success: function(data) {
+//       $("#fft-max-magnitude").text(data.fftMaxMagnitude);
+//     },
+//     error: function(jqXHR, textStatus, errorThrown) {
+//       console.log(textStatus, errorThrown);
+//     }
+//   });
+// });
+
+// var maxfft = document.getElementById("fft-max-magnitude");
+// console.log(maxfft);
