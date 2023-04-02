@@ -104,8 +104,6 @@ if (addedsignals>0){
   //if (numberofcomponents==-1){numberofcomponents=0;}
   signalsMenu.options.length = 0;
   Plotly.deleteTraces(plotDiv, 0);
-
-
 }
 // Loop through the lines and split each line into columns
 for (let i = 0; i < lines.length; i++) {
@@ -193,7 +191,7 @@ SRSLider.oninput = () => {
     SROutput.innerHTML = SRSLider.value + " Hz";
   };
 
-/////////actually sampling
+////////////////////////////////actually sampling///////////////////////////////////////////
 let sampleX = [];
 let sampleY = [];
 let constructx=[];
@@ -224,7 +222,7 @@ SRSLider.addEventListener("mouseup", async function () {
     sampleX = [];
     sampleY = [];
     
-    let step = (time.length)/time[time.length-2] / (samplingRate) ; /////////// sampling step equation
+    let step = (time.length)/time[time.length-2] / (samplingRate) ; /////////// sampling step equation 1000/sampling rate
     ////////// (samples * sampling period )
     
     
@@ -246,7 +244,7 @@ SRSLider.addEventListener("mouseup", async function () {
 
     }
 //////////////////////RECONSTRUCTION
-// Resample using sinc interpolation
+// Resample using sinc interpolation (Nyquist Channnon)
 constructx=[...time];
 constructy=[];
 difference=[];
@@ -464,7 +462,7 @@ noise_array=[];
 let SNR =snrSlider.value;
 
 //let copiedY = [...Amplitude_1];
-      //we calculate the average of the square values of y (aka the power)
+      //we calculate the average of the square values of y
       var sum_power = 0;
       for (let itr = 0; itr < Amplitude_1.length; itr += 1) {
 
