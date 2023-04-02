@@ -272,7 +272,7 @@ let Fs = samplingRate;
 
 for (let i=0;i<Amplitude_1.length;i++){
 let x= Amplitude_1[i]-constructy[i];
-difference.push(Math.abs(x));
+difference.push(x);
 }
 
 
@@ -401,7 +401,7 @@ let deleteBtn = document.getElementById("delete");
 
 deleteBtn.onclick = async ()=>{
 if (samplingflag)
-{Plotly.deleteTraces(plotDiv, 1);Plotly.deleteTraces(plotDiv2, 0);Plotly.deleteTraces(plotDiv3, 1);Plotly.deleteTraces(plotDiv3, 0);samplingflag=false;}
+{Plotly.deleteTraces(plotDiv, 1);Plotly.deleteTraces(plotDiv2, 0);Plotly.deleteTraces(plotDiv3, 0);samplingflag=false;}
 let deletedcomponent=signalsMenu.value;
 for (let i=0;i<5000;i+=1){
 
@@ -534,6 +534,7 @@ const trace = {
   },
 };
 Plotly.newPlot(plotDiv, [trace], layout, config);
+samplingflag=false;
 }
 //For generating a gaussian distributed variable
 function boxMullerTransform() {
