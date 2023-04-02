@@ -198,6 +198,7 @@ let sampleX = [];
 let sampleY = [];
 let constructx=[];
 let constructy=[];
+let difference=[];
 SRSLider.addEventListener("mouseup", async function () {
   let fmaxviafft=0;
   $(document).ready(function() {
@@ -248,6 +249,7 @@ SRSLider.addEventListener("mouseup", async function () {
 // Resample using sinc interpolation
 constructx=[...time];
 constructy=[];
+difference=[];
 //constructy=sincInterpolation(time,sampleY,samplingRate,constructx);
 let Fs = samplingRate;                                                                   
     //calculating the reconstructed signal using sinc interpolation
@@ -268,7 +270,10 @@ let Fs = samplingRate;
       constructy.push(interpolatedValue);
     }
 
-
+for (let i=0;i<Amplitude_1.length;i++){
+let x= Amplitude_1[i]-constructy[i];
+difference.push(Math.abs(x));
+}
 
 
 
@@ -283,11 +288,21 @@ const trace = {
   },
   name: 'Reconstructed Signal'
 };
+const trace1 = {
+  x: constructx,
+  y: difference,
+  type: 'scatter',
+  mode: 'lines',
+  line: {
+    color: 'blue'
+  },
+  name: 'Reconstructed Signal'
+};
 Plotly.newPlot(plotDiv2, [trace],layout2,config2);
-Plotly.newPlot(plotDiv3, [trace],layout3,config3);
-Plotly.addTraces(plotDiv3, {x: time,y: Amplitude_1,  type: 'scatter',name:"original",line: {
-    color: 'red'
-  }});
+Plotly.newPlot(plotDiv3, [trace1],layout3,config3);
+// Plotly.addTraces(plotDiv3, {x: time,y: Amplitude_1,  type: 'scatter',name:"original",line: {
+//     color: 'red'
+//   }});
   });
 
   
