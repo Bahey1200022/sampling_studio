@@ -10,9 +10,32 @@ app = Flask(__name__)
 def Sampling_Studio():
     return render_template('main.html')
 
+
+
 @app.route('/calculate-fft-max', methods=['POST'])
+
 def calculate_fft_max():
-    array = request.get_json()
+    array= request.get_json()
+    for i in range(len(array[0])):
+        if type(array[0][i]) is not float:
+            array[0][i] = 0
+        
+    fft_data = np.fft.fft(array[0])
+    T=array[1][len(array[1])-2]
+    
+    freq = np.fft.fftfreq(len(array[0]), d=T/len(array[0]))
+    fft_data = np.abs(fft_data)
+    fft_data = np.round(fft_data, 2)
+        # Find the index of the all maximum values in the FFT array
+    max_index = np.where(np.abs(fft_data) == np.max(np.abs(fft_data)))
+    max_frequency = 0
+    for i in max_index[0]:
+        max_frequency = max(max_frequency, np.abs(freq[i]))
+    
+
+     
+    return jsonify({'fftMaxMagnitude': max_frequency})   
+    
     
     # fourier = fft(array)
     # N = len(array)
@@ -26,12 +49,12 @@ def calculate_fft_max():
 
     # max_frequency = frequency_axis[max_freq_index]
     # print(max_frequency)
-    fft_signal = fft(array) # Perform the FFT on the signal
-    freqs = np.fft.fftfreq(len(array),d=1/1000) # Get the corresponding frequency values
-    abs_fft_signal = np.abs(freqs) # Get the absolute value of the FFT signal
-    peaks, _ = find_peaks(abs_fft_signal) # Find the indices of the peaks
-    print(freqs[peaks[len(peaks)-1]])
-    max_frequency=1
+    # fft_signal = fft(array) # Perform the FFT on the signal
+    # freqs = np.fft.fftfreq(len(array),d=1/1000) # Get the corresponding frequency values
+    # abs_fft_signal = np.abs(freqs) # Get the absolute value of the FFT signal
+    # peaks, _ = find_peaks(abs_fft_signal) # Find the indices of the peaks
+    # print(freqs[peaks[len(peaks)-1]])
+    # max_frequency=1
     # max_freq_index = np.argmax(np.abs(fft_signal)) # Find the index of the highest amplitude component
     # # max_frequency = freqs[max_freq_index] # Get the frequency value of the highest amplitude component
     # max_frequency = np.max(freqs) # Get the frequency value of the highest amplitude component
@@ -40,7 +63,7 @@ def calculate_fft_max():
     
     
     
-    return jsonify({'fftMaxMagnitude': max_frequency})
+
 
 if __name__ == '__main__':
     app.run(debug=True)
