@@ -16,13 +16,13 @@ def Sampling_Studio():
 
 def calculate_fft_max():
     array= request.get_json()
-    for i in array[0]:
+    for i in range(len(array[0])):
         if type(array[0][i]) is not float:
             array[0][i] = 0
         
     fft_data = np.fft.fft(array[0])
-    T=array[1][-1]
-    print(None in array[0]) 
+    T=array[1][len(array[1])-2]
+    
     freq = np.fft.fftfreq(len(array[0]), d=T/len(array[0]))
     fft_data = np.abs(fft_data)
     fft_data = np.round(fft_data, 2)
