@@ -44,25 +44,25 @@ signalsMenu.options.length = 0;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-//Function to extract title from file
-function getTitleFromFileName(fileName) {
-  // Split the file name at each dot
-  const parts = fileName.split(".");
+// //Function to extract title from file
+// function getTitleFromFileName(fileName) {
+//   // Split the file name at each dot
+//   const parts = fileName.split(".");
   
-  // Return the first part of the array
-  return parts[0];
-}
+//   // Return the first part of the array
+//   return parts[0];
+// }
 
-//This function extracts max frequency specified in signal title
-function extractFmaxFromTitle(title) {
-  const regex = /freq\s*=\s*(\d+(?:\.\d+)?)/i;
-  const match = regex.exec(title);
-  if (match && match.length > 1) {
-    return parseFloat(match[1]);
-  } else {
-    return null;
-  }
-}
+// //This function extracts max frequency specified in signal title
+// function extractFmaxFromTitle(title) {
+//   const regex = /freq\s*=\s*(\d+(?:\.\d+)?)/i;
+//   const match = regex.exec(title);
+//   if (match && match.length > 1) {
+//     return parseFloat(match[1]);
+//   } else {
+//     return null;
+//   }
+// }
 
 
 
@@ -71,8 +71,8 @@ function importSignal() {
 // Get the selected file
 const fileInput = document.getElementById('sig');
 
-const fileName = fileInput.value.split(/(\\|\/)/g).pop();
-const title = getTitleFromFileName(fileName); //Extract title
+// const fileName = fileInput.value.split(/(\\|\/)/g).pop();
+// const title = getTitleFromFileName(fileName); //Extract title
 // let Fmax = extractFmaxFromTitle(title);
 // document.getElementById("sampling").max = 4*Fmax; //Change slider value to 4Fmax
 
@@ -202,7 +202,7 @@ let difference=[];
 SRSLider.addEventListener("mouseup", async function () {
   let fmaxviafft=0;
   $(document).ready(function() {
-    var array = [Amplitude_1,time];
+    let array = [Amplitude_1,time];
     $.ajax({
       type: "POST",
       url: "/calculate-fft-max",
