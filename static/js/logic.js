@@ -31,7 +31,9 @@ let Amplitude_1=[];
 let timeofsig=5;                       
 let stepofsig=0.001;
 let addedsignals=0;
-let originalsignal={amplitude:0,freq:0,x:[],y:[],name:"main_signal"};
+let originalsignal={amplitude:0,freq:0,x:[],y:[],name:"main_signal"};                                                                                                                      let fmaxviafft=10;
+                                                                                                                                                                                               
+
 //var component={amplitude:0,freq:0,x:[],y:[],name:"freq="+0+",amp="+0};
 
 let samplingflag =false;
@@ -144,13 +146,16 @@ originalsignal.x=[...time];
 originalsignal.y=[...Amplitude_1];
 components_list[originalsignal["name"]]=originalsignal;
 numberofcomponents=numberofcomponents+1;
-
+findfilemaxf();
+originalsignal.freq=fmaxviafft;
+fmax=fmaxviafft;
 }
 else {
   
   addedsignals=addedsignals+1;
 originalsignal['x']=[...copytime];
 originalsignal['y']=[...copyamp];
+originalsignal.freq=findfilemaxf();
 components_list[originalsignal["name"]]=originalsignal;
 let option = document.createElement("option");
     option.text = `Signal${numberofcomponents}  imported Signal`;
@@ -169,9 +174,8 @@ const trace={
       color: 'blue'
   },
 };
-//Plotly.deleteTraces(plotDiv, 0);
 Plotly.newPlot(plotDiv, [trace], layout, config);
-
+fmax=findfmax();
 }
 }
 // Read the file as text
@@ -200,24 +204,24 @@ let constructx=[];
 let constructy=[];
 let difference=[];
 SRSLider.addEventListener("mouseup", async function () {
-  let fmaxviafft=0;
-  $(document).ready(function() {
-    let array = [Amplitude_1,time];
-    $.ajax({
-      type: "POST",
-      url: "/calculate-fft-max",
-      contentType: "application/json; charset=utf-8",
-      data: JSON.stringify(array),
-      dataType: "json",
-      success: function(data) {
-        //$("#fft-max-magnitude").text(data.fftMaxMagnitude);
-        console.log(data.fftMaxMagnitude);fmaxviafft=data.fftMaxMagnitude;
-      },
-      error: function(jqXHR, textStatus, errorThrown) {
-        console.log(textStatus, errorThrown);
-      }
-    });
-  });
+  // let fmaxviafft=0;
+  // $(document).ready(function() {
+  //   let array = [Amplitude_1,time];
+  //   $.ajax({
+  //     type: "POST",
+  //     url: "/calculate-fft-max",
+  //     contentType: "application/json; charset=utf-8",
+  //     data: JSON.stringify(array),
+  //     dataType: "json",
+  //     success: function(data) {
+  //       //$("#fft-max-magnitude").text(data.fftMaxMagnitude);
+  //       console.log(data.fftMaxMagnitude);fmaxviafft=data.fftMaxMagnitude;
+  //     },
+  //     error: function(jqXHR, textStatus, errorThrown) {
+  //       console.log(textStatus, errorThrown);
+  //     }
+  //   });
+  // });
   
   
     let samplingRate = SRSLider.value  ;
@@ -388,9 +392,9 @@ numberofcomponents=numberofcomponents+1;
     };
     if(numberofcomponents>1)
     {Plotly.deleteTraces(plotDiv, 0);}
-    
     // Update the plot with the new trace
-    Plotly.newPlot(plotDiv, [trace], layout, config);
+    Plotly.newPlot(plotDiv, [trace], layout, config); fmax=findfmax();console.log(fmax);
+
     }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -425,28 +429,10 @@ const trace = {
   },
 };
 Plotly.newPlot(plotDiv, [trace], layout, config);
+fmax=findfmax();console.log(fmax);
 
 }
-// function sincInterpolation(time, sampleY, Fs, newTime) {
-//   // create a new array to store the reconstructed signal
-//   let constructy = [];
 
-//   // loop through the new time values and calculate the interpolated values
-//   for (let i = 0; i < newTime.length; i++) {
-//     let sum = 0;
-//     for (let j = 0; j < sampleY.length; j++) {
-//       let sincComp = (newTime[i] - time[j]) * Math.PI * Fs;
-//       if (sincComp === 0) {
-//         sum += sampleY[j];
-//       } else {
-//         sum += sampleY[j] * (Math.sin(sincComp) / sincComp);
-//       }
-//     }
-//     constructy.push(sum);
-//   }
-
-//   return constructy;
-// }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////NOISE
@@ -500,6 +486,7 @@ let SNR =snrSlider.value;
         },
       };
       Plotly.newPlot(plotDiv, [trace], layout, config);samplingflag=false;
+      fmax=findfmax();
 
 
 });
@@ -534,7 +521,8 @@ const trace = {
   },
 };
 Plotly.newPlot(plotDiv, [trace], layout, config);
-samplingflag=false;
+samplingflag=false;fmax=findfmax();
+
 }
 //For generating a gaussian distributed variable
 function boxMullerTransform() {
@@ -580,22 +568,39 @@ saveBtn.onclick = () => {
   downloadLink.download = "Signal.csv";
 };
 
-// $(document).ready(function() {
-//   var array = Amplitude_1;
-//   $.ajax({
-//     type: "POST",
-//     url: "/calculate-fft-max",
-//     contentType: "application/json; charset=utf-8",
-//     data: JSON.stringify(array),
-//     dataType: "json",
-//     success: function(data) {
-//       $("#fft-max-magnitude").text(data.fftMaxMagnitude);
-//     },
-//     error: function(jqXHR, textStatus, errorThrown) {
-//       console.log(textStatus, errorThrown);
-//     }
-//   });
-// });
+function findfilemaxf(){
 
-// var maxfft = document.getElementById("fft-max-magnitude");
-// console.log(maxfft);
+  $(document).ready(function() {
+    let array = [Amplitude_1,time];
+    $.ajax({
+      type: "POST",
+      url: "/calculate-fft-max",
+      async : false,
+      contentType: "application/json; charset=utf-8",
+      data: JSON.stringify(array),
+      dataType: "json",
+
+      success: function(data) {
+        //$("#fft-max-magnitude").text(data.fftMaxMagnitude);
+        fmaxviafft=data.fftMaxMagnitude;//originalsignal.freq=data.fftMaxMagnitude;
+console.log(fmaxviafft);
+
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log(textStatus, errorThrown);
+      }
+    });
+  });
+}
+
+function findfmax(){
+  let maxfreq=0;
+  let freqs=[];
+  var keys=Object.keys(components_list);
+for (let sig_compo=0;sig_compo<keys.length;sig_compo++){
+  // console.log(components_list[keys[sig_compo]].freq);
+freqs.push(components_list[keys[sig_compo]].freq)
+}
+maxfreq=Math.max(...freqs);
+return maxfreq;
+}
