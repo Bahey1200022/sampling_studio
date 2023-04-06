@@ -109,7 +109,7 @@ if (addedsignals>0){
   Plotly.deleteTraces(plotDiv, 0);
 }
 // Loop through the lines and split each line into columns
-for (let i = 0; i < lines.length; i++) {
+for (let i = 0; i < lines.length && i <= 5000; i++) {
     const columns = lines[i].split(',');
 
     // Store the column values in their respective arrays
@@ -147,7 +147,9 @@ components_list[originalsignal["name"]]=originalsignal;
 numberofcomponents=numberofcomponents+1;
 findfilemaxf();
 originalsignal.freq=fmaxviafft;
-fmax=fmaxviafft;
+console.log(fmaxviafft)
+fmax = findfmax();
+SRSLider.max = 4*fmax;
 }
 else {
   
@@ -175,6 +177,7 @@ const trace={
 };
 Plotly.newPlot(plotDiv, [trace], layout, config);
 fmax=findfmax();
+SRSLider.max = 4*fmax;
 }
 }
 // Read the file as text
@@ -392,7 +395,10 @@ numberofcomponents=numberofcomponents+1;
     if(numberofcomponents>1)
     {Plotly.deleteTraces(plotDiv, 0);}
     // Update the plot with the new trace
-    Plotly.newPlot(plotDiv, [trace], layout, config); fmax=findfmax();console.log(fmax);
+    Plotly.newPlot(plotDiv, [trace], layout, config); 
+    fmax=findfmax();
+    SRSLider.max = 4*fmax;
+    console.log(fmax);
 
     }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -428,7 +434,9 @@ const trace = {
   },
 };
 Plotly.newPlot(plotDiv, [trace], layout, config);
-fmax=findfmax();console.log(fmax);
+fmax=findfmax();
+SRSLider.max = 4*fmax;
+console.log(fmax);
 
 }
 
@@ -486,6 +494,7 @@ let SNR =snrSlider.value;
       };
       Plotly.newPlot(plotDiv, [trace], layout, config);samplingflag=false;
       fmax=findfmax();
+      SRSLider.max = 4*fmax;
 
 
 });
@@ -520,7 +529,8 @@ const trace = {
   },
 };
 Plotly.newPlot(plotDiv, [trace], layout, config);
-samplingflag=false;fmax=findfmax();
+samplingflag=false;
+fmax=findfmax();
 
 }
 //For generating a gaussian distributed variable
@@ -569,30 +579,28 @@ saveBtn.onclick = () => {
 
 
 
-function findfilemaxf(){
-
-  $(document).ready(function() {
-    let array = [Amplitude_1,time];
-    $.ajax({
-      type: "POST",
-      url: "/calculate-fft-max",
-      async : false,
-      contentType: "application/json; charset=utf-8",
-      data: JSON.stringify(array),
-      dataType: "json",
-
-      success: function(data) {
-        //$("#fft-max-magnitude").text(data.fftMaxMagnitude);
-        fmaxviafft=data.fftMaxMagnitude;//originalsignal.freq=data.fftMaxMagnitude;
-console.log(fmaxviafft);
-
-      },
-      error: function(jqXHR, textStatus, errorThrown) {
-        console.log(textStatus, errorThrown);
+function findfilemaxf(callback){
+  let array = [Amplitude_1, time];
+  $.ajax({
+    type: "POST",
+    url: "/calculate-fft-max",
+    async: false,
+    contentType: "application/json; charset=utf-8",
+    data: JSON.stringify(array),
+    dataType: "json",
+    success: function(data) {
+      fmaxviafft = data.fftMaxMagnitude;
+      console.log(fmaxviafft);
+      if (typeof callback === "function") {
+        callback();
       }
-    });
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(textStatus, errorThrown);
+    }
   });
 }
+
 
 function findfmax(){
   let maxfreq=0;
@@ -603,5 +611,6 @@ for (let sig_compo=0;sig_compo<keys.length;sig_compo++){
 freqs.push(components_list[keys[sig_compo]].freq)
 }
 maxfreq=Math.max(...freqs);
+SRSLider.max = maxfreq;
 return maxfreq;
 }
