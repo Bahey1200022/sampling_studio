@@ -24,6 +24,7 @@ Plotly.newPlot(plotDiv3, [], layout3, config3);
 /////////////////////variables for signal parameters
 let components_list={};
 let numberofcomponents=0;
+let fmaxviafft = 0;
 let fmax;
 let amplitudeofsig;
 let time=[];
@@ -31,7 +32,7 @@ let Amplitude_1=[];
 let timeofsig=5;                       
 let stepofsig=0.001;
 let addedsignals=0;
-let originalsignal={amplitude:0,freq:0,x:[],y:[],name:"main_signal"};                                                                                                                      let fmaxviafft=10;
+let originalsignal={amplitude:0,freq:0,x:[],y:[],name:"main_signal"};
                                                                                                                                                                                                
 
 //var component={amplitude:0,freq:0,x:[],y:[],name:"freq="+0+",amp="+0};
@@ -565,6 +566,8 @@ saveBtn.onclick = () => {
   //provide the name for the CSV file to be downloaded
   downloadLink.download = "Signal.csv";
 };
+
+
 
 function findfilemaxf(){
 
