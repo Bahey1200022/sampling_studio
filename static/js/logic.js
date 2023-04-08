@@ -590,7 +590,9 @@ function findfilemaxf(callback){
     dataType: "json",
     success: function(data) {
       fmaxviafft = data.fftMaxMagnitude;
+      if(fmaxviafft==0){fmaxviafft=18}
       console.log(fmaxviafft);
+      
       if (typeof callback === "function") {
         callback();
       }
