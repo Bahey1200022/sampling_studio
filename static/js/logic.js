@@ -30,9 +30,10 @@ let amplitudeofsig;
 let time=[];
 let Amplitude_1=[];
 let timeofsig=5;                       
-let stepofsig=0.001;
+let stepofsig=0.0001;
 let addedsignals=0;
 let originalsignal={amplitude:0,freq:0,x:[],y:[],name:"main_signal"};
+let phase =0;
                                                                                                                                                                                                
 
 //var component={amplitude:0,freq:0,x:[],y:[],name:"freq="+0+",amp="+0};
@@ -196,7 +197,7 @@ SROutput.innerHTML = SRSLider.value;
 SROutput.innerHTML = SRSLider.value + " Hz";
 ///showing sampling rate
 SRSLider.oninput = () => {
-    SROutput.innerHTML = SRSLider.value + " Hz";
+    SROutput.innerHTML = SRSLider.value + " Hz -"+(SRSLider.value/fmax) +"fmax";
   };
 
 ////////////////////////////////actually sampling///////////////////////////////////////////
@@ -206,27 +207,9 @@ let constructx=[];
 let constructy=[];
 let difference=[];
 SRSLider.addEventListener("mouseup", async function () {
-  // let fmaxviafft=0;
-  // $(document).ready(function() {
-  //   let array = [Amplitude_1,time];
-  //   $.ajax({
-  //     type: "POST",
-  //     url: "/calculate-fft-max",
-  //     contentType: "application/json; charset=utf-8",
-  //     data: JSON.stringify(array),
-  //     dataType: "json",
-  //     success: function(data) {
-  //       //$("#fft-max-magnitude").text(data.fftMaxMagnitude);
-  //       console.log(data.fftMaxMagnitude);fmaxviafft=data.fftMaxMagnitude;
-  //     },
-  //     error: function(jqXHR, textStatus, errorThrown) {
-  //       console.log(textStatus, errorThrown);
-  //     }
-  //   });
-  // });
   
   
-    let samplingRate = SRSLider.value  ;
+    let samplingRate = SRSLider.value;
     sampleX = [];
     sampleY = [];
     
@@ -320,27 +303,36 @@ var ampSlider = document.getElementById("Amplitude");
 var ampOutput = document.getElementById("ampOutput");
 var freqSlider = document.getElementById("maxfreq");
 var freqOutput = document.getElementById("freqOutput");
+var phaseSlider = document.getElementById("phase");
+var phasedisplay = document.getElementById("phasedisplay");
+var freqOutput = document.getElementById("freqOutput");
 let addSignalBtn = document.getElementById("mixSignalbtn");
 ampOutput.innerHTML = ampSlider.value;
 freqOutput.innerHTML = freqSlider.value;
+phasedisplay.innerHTML = phaseSlider.value;
+
 ampOutput.innerHTML = ampSlider.value + " mV";
 freqOutput.innerHTML = freqSlider.value + " Hz";
+phasedisplay.innerHTML = phaseSlider.value/180 + " π";
 ampSlider.oninput = () => {
   ampOutput.innerHTML = ampSlider.value + " mV";
 };
 freqSlider.oninput = ()=> {
   freqOutput.innerHTML = freqSlider.value + " Hz";
 };
+phaseSlider.oninput = ()=> {
+  phasedisplay.innerHTML = phaseSlider.value/180 + " π";
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////generate signal func
 //let component={amplitude:0,freq:0, x :[],y :[],name:"freq="+0+",amp="+0};
-  function generate(amp, f, times =timeofsig, step = stepofsig) {
-    const exp = "amp * Math.sin(2*pi*x*f)";
+  function generate(amp, f,p, times =timeofsig, step = stepofsig) {
+    const exp = "amp * Math.sin((2*pi*x*f)+(p/180))";
     const pi = Math.PI;
     fmax = f;
     amplitudeofsig= amp;
-    
+    phase=p;
     let xdata = [];
     let ydata = [];
     for (let x = 0; x <= times; x += step) {
@@ -364,7 +356,7 @@ component["name"]="freq="+f+",amp="+amp;
   }
 
 mixSignalbtn.onclick =async () => {
-  generatedsignal =generate(ampSlider.value,freqSlider.value);
+  generatedsignal =generate(ampSlider.value,freqSlider.value,phaseSlider.value);
   if (samplingflag)
 {Plotly.deleteTraces(plotDiv, 1);samplingflag=false;}
   if (numberofcomponents==0)
@@ -448,7 +440,7 @@ var snrOutput = document.getElementById("snrOutput");
 let SNR = snrSlider.value;
 
 snrSlider.oninput = async function () {
-  snrOutput.innerHTML  = snrSlider.value;
+  snrOutput.innerHTML  = snrSlider.value ;
   
 };
 let noise_array=[];

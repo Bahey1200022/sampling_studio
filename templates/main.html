@@ -26,6 +26,9 @@
            <label for="Amplitude" id="frel">Max Amplitude of mixed signal</label>
            <input type="range" min="0.5" max="15" step="0.5" value="5" class="slider" id="Amplitude">
            Amp: <span id="ampOutput"></span><br><br>
+           <label for="phase" id="frel">phase mixed signal</label><br>
+           <input type="range" min="1" max="360" step="1" value="0" class="slider" id="phase">
+           phase: <span id="phasedisplay"></span><br><br>
            <button type="button" name="button" id="mixSignalbtn" >Add Signal</button>
            <div>
             <br>
@@ -70,10 +73,8 @@
 
     </div>
 
-
     <div class="main">
 
-        <h1>Sampling Studio</h1>
                 
 
 <div class="container">
